@@ -1,0 +1,7 @@
+file(GLOB_RECURSE ALL_SUBDIRS LIST_DIRECTORIES true "*/")
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+foreach(dir IN LISTS ALL_SUBDIRS)
+    if(IS_DIRECTORY "${dir}")
+        add_subdirectory("${dir}")
+    endif()
+endforeach()

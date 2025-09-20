@@ -1,0 +1,6 @@
+
+set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+set(DESTINATION_DIR "${CMAKE_BINARY_DIR}/src/tools")
+file(COPY ${SOURCE_DIR} DESTINATION ${DESTINATION_DIR})
+message("Copying directory:\n    from ${SOURCE_DIR} to ${DESTINATION_DIR}")
+     

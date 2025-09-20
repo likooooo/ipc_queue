@@ -1,0 +1,10 @@
+add_subdirectory(plugin)
+add_subdirectory(python)
+
+include_directories(../)
+file(GLOB tests ${CMAKE_CURRENT_LIST_DIR}/*.cpp)
+foreach(test IN LISTS tests)
+    get_filename_component(WLE ${test} NAME_WLE)
+    add_executable(${WLE} ${test})
+    target_link_libraries(${WLE} ipc_queue plugin_manager)
+endforeach()

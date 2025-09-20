@@ -1,0 +1,1 @@
+add_library(plugin_manager SHARED plugin_manager.cpp)
