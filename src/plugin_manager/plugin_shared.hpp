@@ -9,9 +9,9 @@ class IPlugin;
 class IPluginHost {
 public:
     virtual ~IPluginHost() = default;
-    virtual std::string registerService(IPlugin* pPlugin, const std::string& name, const service_t& service) = 0;
-    virtual void unregisterService(IPlugin* pPlugin, const std::string& serviceId) = 0;
-    virtual service_t queryService(const std::string& name) = 0;
+    virtual std::string register_service(IPlugin* pPlugin, const std::string& name, const service_t& service) = 0;
+    virtual void unregister_service(IPlugin* pPlugin, const std::string& serviceId) = 0;
+    virtual service_t query_service(const std::string& name) = 0;
 };
 
 class IPlugin {

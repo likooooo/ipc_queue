@@ -10,10 +10,10 @@
   using LibHandle = void*;
 #endif
 
-class DynamicLibrary {
+class dynamic_library {
 public:
-    DynamicLibrary() : handle(nullptr) {}
-    ~DynamicLibrary() { close(); }
+    dynamic_library() : handle(nullptr) {}
+    ~dynamic_library() { close(); }
 
     void open(const std::string& path) {
         close();

@@ -8,10 +8,10 @@
 #include <mutex>
 #include <any>
 
-std::string PluginManager::loadPlugin(const std::string& path) {
+std::string plugin_manager::load_plugin(const std::string& path) {
     std::lock_guard<std::mutex> lk(mu);
 
-    auto plib = new DynamicLibrary ;
+    auto plib = new dynamic_library ;
     auto& lib = *plib;
     lib.open(path);
 
@@ -30,7 +30,7 @@ std::string PluginManager::loadPlugin(const std::string& path) {
         throw std::runtime_error("plugin onLoad failed");
     }
 
-    PluginRecord rec;
+    plugin_record rec;
     rec.path = path;
     rec.lib = plib;
     rec.plugin = plugin;
@@ -49,12 +49,12 @@ std::string PluginManager::loadPlugin(const std::string& path) {
     return key;
 }
 
-void PluginManager::unloadPlugin(const std::string& name) {
+void plugin_manager::unload_plugin(const std::string& name) {
     std::lock_guard<std::mutex> lk(mu);
     auto it = records.find(name);
     if (it == records.end()) return;
 
-    PluginRecord& rec = it->second;
+    plugin_record& rec = it->second;
     rec.plugin->onUnload();
     rec.destroy(rec.plugin);
     rec.lib->close();
@@ -63,24 +63,24 @@ void PluginManager::unloadPlugin(const std::string& name) {
     std::cout << name << " unloaded\n";
 }
 
-void PluginManager::unloadAll() {
+void plugin_manager::unload_all() {
     std::vector<std::string> names;
     {
         std::lock_guard<std::mutex> lk(mu);
         for (auto &p : records) names.push_back(p.first);
     }
-    for (auto &n : names) unloadPlugin(n);
+    for (auto &n : names) unload_plugin(n);
 }
 
-std::string PluginManager::registerService(IPlugin* pPlugin, const std::string& name, const service_t& service) {
+std::string plugin_manager::register_service(IPlugin* pPlugin, const std::string& name, const service_t& service) {
     std::string id = std::string(pPlugin->name()) + "#" + name;
-    services.emplace(id, ServiceEntry{name, service});
+    services.emplace(id, service_entry{name, service});
     nameIndex[name].push_back(id);
     std::cout <<"*    " << pPlugin->name()<< " registered service : " << id << "\n";
     return id;
 }
 
-void PluginManager::unregisterService(IPlugin* pPlugin, const std::string& serviceId) {
+void plugin_manager::unregister_service(IPlugin* pPlugin, const std::string& serviceId) {
     auto it = services.find(serviceId);
     if (it == services.end()) return;
     auto name = it->second.name;
@@ -91,14 +91,14 @@ void PluginManager::unregisterService(IPlugin* pPlugin, const std::string& servi
     std::cout <<"*    " << pPlugin->name()<< " unregistered service : " << serviceId << "\n";
 }
 
-service_t PluginManager::queryService(const std::string& name) {
+service_t plugin_manager::query_service(const std::string& name) {
     std::lock_guard<std::mutex> lk(mu);
     auto it = nameIndex.find(name);
     if (it == nameIndex.end() || it->second.empty()) return service_t();
     return services[it->second.front()].service;
 }
 
-std::vector<std::string> PluginManager::loadedPlugins() const {
+std::vector<std::string> plugin_manager::loaded_plugins() const {
     std::lock_guard<std::mutex> lk(mu);
     std::vector<std::string> out;
     for (auto &p : records) out.push_back(p.first);

@@ -5,37 +5,38 @@
 #include <cstddef>
 #include <mutex>
 
-class DynamicLibrary;
+class dynamic_library;
+using plugin_service_key = uint32_t;
 
-class PluginManager : public IPluginHost {
+class plugin_manager : public IPluginHost {
 public:
-    PluginManager() = default;
-    ~PluginManager() { unloadAll();}
+    plugin_manager() = default;
+    ~plugin_manager() { unload_all();}
 
-    std::string loadPlugin(const std::string& path);
-    void unloadPlugin(const std::string& name);
-    void unloadAll();
+    std::string load_plugin(const std::string& path);
+    void unload_plugin(const std::string& name);
+    void unload_all();
 
-    std::string registerService(IPlugin* pPlugin, const std::string& name, const service_t& service) override;
-    void unregisterService(IPlugin* pPlugin, const std::string& serviceId) override;
-    service_t queryService(const std::string& name) override;
-    std::vector<std::string> loadedPlugins() const;
+    std::string register_service(IPlugin* pPlugin, const std::string& name, const service_t& service) override;
+    void unregister_service(IPlugin* pPlugin, const std::string& serviceId) override;
+    service_t query_service(const std::string& name) override;
+    std::vector<std::string> loaded_plugins() const;
 
 private:
-    struct PluginRecord {
+    struct plugin_record {
         std::string path;
-        DynamicLibrary* lib = nullptr;
+        dynamic_library* lib = nullptr;
         IPlugin* plugin = nullptr;
         destroy_plugin_fn destroy = nullptr;
     };
 
-    struct ServiceEntry {
+    struct service_entry {
         std::string name;
         service_t service;
     };
 
     mutable std::mutex mu;
-    std::unordered_map<std::string, PluginRecord> records;
-    std::unordered_map<std::string, ServiceEntry> services;
+    std::unordered_map<std::string, plugin_record> records;
+    std::unordered_map<std::string, service_entry> services;
     std::unordered_map<std::string, std::vector<std::string>> nameIndex;
 };

@@ -8,7 +8,7 @@
 
 namespace fs = std::filesystem;
 
-void load_all_plugin(const fs::path& directory, PluginManager& mgr) 
+void load_all_plugin(const fs::path& directory, plugin_manager& mgr) 
 {
     if (!fs::exists(directory) || !fs::is_directory(directory)) {
         std::cerr << "Error: The provided path is not a valid directory." << std::endl;
@@ -22,7 +22,7 @@ void load_all_plugin(const fs::path& directory, PluginManager& mgr)
                 c = std::tolower(c);
             }
             if (extension == ".dll" || extension == ".so") {
-                mgr.loadPlugin(entry.path().string());
+                mgr.load_plugin(entry.path().string());
             }
         }
     }
@@ -41,7 +41,7 @@ pack_str(const char (&t)[N])
 
 int main()
 {
-    PluginManager mgr;
+    plugin_manager mgr;
     load_all_plugin(fs::absolute("./plugin"), mgr);
     const uint32_t max_memory_size = 1024;
     auto ipc = ipc_queue::create_if_not_exists(get_shared_file_path(), max_memory_size);
@@ -53,7 +53,7 @@ int main()
     
     std::cout << std::endl << std::endl << "simulation-toykit is RUNNING\n";
     std::string service_name = "print_stack_info";
-    auto func = mgr.queryService(service_name);
+    auto func = mgr.query_service(service_name);
     if(func.has_value()){
         std::any_cast<void(*)()>(func)();
     }

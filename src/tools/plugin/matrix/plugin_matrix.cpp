@@ -61,15 +61,15 @@ public:
 #endif
         host_ = host;
         service_t s = std::string("hello from plugin");
-        serviceId_.push_back(host_->registerService(this, "greeting", s));
-        serviceId_.push_back(host_->registerService(this, "send_to", (send_matrix_to_ipc)send_to));
-        serviceId_.push_back(host_->registerService(this, "receive_from", (load_matrix_from_ipc)receive_from));
+        serviceId_.push_back(host_->register_service(this, "greeting", s));
+        serviceId_.push_back(host_->register_service(this, "send_to", (send_matrix_to_ipc)send_to));
+        serviceId_.push_back(host_->register_service(this, "receive_from", (load_matrix_from_ipc)receive_from));
         return true;
     }
     void onUnload() override 
     {
         for(const auto& service_name:serviceId_){
-            host_->unregisterService(this, service_name);
+            host_->unregister_service(this, service_name);
         }
     }
 private:

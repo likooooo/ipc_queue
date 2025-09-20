@@ -13,14 +13,14 @@ public:
     {
         host_ = host;
 #if ENABLE_STACK_INFO
-        serviceId_.push_back(host->registerService(this, "print_stack_info", print_stack_info));
+        serviceId_.push_back(host->register_service(this, "print_stack_info", print_stack_info));
 #endif
         return true;
     }
     void onUnload() override 
     {
         for(const auto& service_name:serviceId_){
-            host_->unregisterService(this, service_name);
+            host_->unregister_service(this, service_name);
         }
     }
 private:
