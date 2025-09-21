@@ -1,0 +1,1 @@
+add_library(plugin_stack_manager SHARED plugin_stack_manager.cpp)

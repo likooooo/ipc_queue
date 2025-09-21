@@ -2,6 +2,7 @@
 #include <string>
 #include <cstdint>
 #include <memory>
+#include "ipc_spin_lock.hpp"
 
 struct ipc_queue_impl;
 struct ipc_queue
@@ -9,11 +10,13 @@ struct ipc_queue
     ipc_queue_impl* pImpl;
     ipc_queue();
     ipc_queue(ipc_queue&&);
+    ipc_queue& operator=(ipc_queue&&);
     ~ipc_queue();
     
     ipc_queue(const ipc_queue&) = delete;
     ipc_queue& operator=(const ipc_queue&) = delete;
-    
+    ipc_spin_lock& spin_lock() const;
+
     static ipc_queue create(const std::string& filename, uint32_t bytes);
     static ipc_queue create_if_not_exists(const std::string& filename, uint32_t bytes);
     static ipc_queue open(const std::string& filename);

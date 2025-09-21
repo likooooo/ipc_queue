@@ -3,12 +3,13 @@
 #include <iostream>
 #include <algorithm>
 #include <tuple>
+#include <mutex>
 
 struct ipc_heapframe
 {
     constexpr static bool enable_canary = true;
     constexpr static uint32_t canary = 0xcacacaca;
-    ipc_heap v;
+    ipc_heap v{};
     char* get()
     {
         return v.p;
@@ -30,13 +31,11 @@ struct ipc_heapframe
     static bool is_canary_alive(const ipc_heapframe& heap)
     {
         bool is_alive = get_canary(heap) == canary;
-        
-        // ipc_heap_metadata meta = std::get<ipc_heap_metadata>(sp->v);
-        // std::cerr << "The previous heapframe is damaged."
-        //     "\n    plugin_id=" << meta.ipc_plugin_id << 
-        //     "\n    size     =" << from_heap_index(queue, meta).size <<
-        //     "\n    found    =" << found << std::endl;
-
+        if(!is_alive){
+            std::cerr << "The heapframe is damaged." 
+            "\n    size =" << heap.v.size <<
+            "\n    ptr  =" << (char*)heap.v.p << std::endl;
+        }
         return is_alive;
     }
     static ipc_heapframe& move_heap_next(ipc_heapframe& heap)

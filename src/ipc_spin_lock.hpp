@@ -6,9 +6,10 @@
 
 struct ipc_spin_lock 
 {
+    ipc_spin_lock() = default;
     explicit ipc_spin_lock(void* shared_memory) 
     {
-        lock_ptr_ = new (shared_memory) std::atomic<uint32_t>(0);
+        lock_ptr_ = reinterpret_cast<std::atomic<uint32_t>*>(shared_memory);
     }
 
     void lock() 

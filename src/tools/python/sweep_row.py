@@ -74,7 +74,7 @@ def main():
         else:
             import os
             cmd = ' '.join([command] + [str(s) for s in sweep_row])
-            os.system(cmd)
+            assert(0 == os.system(cmd))
 
     args, unknown  = prase_cmd()
     try:

@@ -4,7 +4,7 @@
 struct ipc_heap
 {
     // size of p
-    uint32_t size;
+    uint32_t size{0};
     char p[0];
 };
 struct ipc_heap_metadata

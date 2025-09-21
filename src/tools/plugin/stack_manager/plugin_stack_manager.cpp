@@ -1,14 +1,15 @@
-#include "ipc_heap.h"
+#include "ipc_queue.h"
+#include "ipc_stackframe.h"
+#include "ipc_stackframe_iterator.h"
 #include "plugin_manager/plugin_shared.hpp"
+#include <iostream>
+#include <cxxabi.h>
 #include <vector>
 
-#if ENABLE_STACK_INFO
-    void print_stack_info();
-#endif
-class plugin_basic : public IPlugin 
+class stack_manager : public IPlugin 
 {
 public:
-    const char* name() const override { return "plugin_basic"; }
+    const char* name() const override { return "stack_manager"; }
     bool onLoad(IPluginHost* host) override 
     {
         IPlugin::host_ = host;
@@ -27,6 +28,6 @@ private:
     std::vector<std::string> serviceId_;
 };
 
-extern "C" IPlugin* create_plugin() { return new plugin_basic(); }
+extern "C" IPlugin* create_plugin() { return new stack_manager(); }
 extern "C" void destroy_plugin(IPlugin* p) { delete p; }
 extern "C" int plugin_api_version() { return PLUGIN_API_VERSION; }

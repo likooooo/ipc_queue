@@ -29,17 +29,18 @@ using built_in_helper = ipc_built_in_type<
     float, double, std::complex<float>, std::complex<double>,
     any_object_smaller_than_16_byes, ipc_heap_metadata
 >;
-static_assert(24 == sizeof(typename built_in_helper::type));
+using built_in_t = typename built_in_helper::type;
+static_assert(24 == sizeof(built_in_t));
 
 struct ipc_stackframe
 {
     union stack_inner_meta
     {
         std::atomic<uint32_t> stack_count;
-        std::array<char, 16> mem;
+        std::array<char, 16> mem{0};
     };
-    typename built_in_helper::type v;
-    string_24_bytes name;
+    built_in_t v{0};
+    string_24_bytes name{0};
 
     template<class T> T& get()
     {

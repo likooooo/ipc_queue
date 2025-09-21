@@ -20,6 +20,8 @@ public:
     virtual const char* name() const = 0;
     virtual bool onLoad(IPluginHost* host) = 0;
     virtual void onUnload() = 0;
+protected:
+    IPluginHost* host_ = nullptr;
 };
 
 using create_plugin_fn = IPlugin* (*)();
