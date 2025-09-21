@@ -1,3 +1,4 @@
+#include "plugin/stack_manager/stack_operation_layout.h"
 #include "plugin_manager/plugin_manager.h"
 #include "ipc_queue.h"
 #include "ipc_stackframe.h"
@@ -38,7 +39,17 @@ pack_str(const char (&t)[N])
     }
     return obj;
 }
-
+template<class T> T query_service(plugin_manager& mgr, const std::string& service_name)
+{
+    auto func = mgr.query_service(service_name);
+    if(func.has_value()){
+        return std::any_cast<T>(func);
+    }
+    else{
+        std::cout << "service not found " << service_name << std::endl;
+    }
+    return T();
+}
 int main()
 {
     plugin_manager mgr;
@@ -50,19 +61,15 @@ int main()
         ipc_stackframe::clear_all(ipc);
         ipc_stackframe::push(ipc).v = key;
     }
-    
+    struct pack
+    {
+        uint32_t size{1};
+        uint32_t bytes{sizeof(ipc_stackframe)};
+        ipc_stackframe frame;
+    }p;
+    p.frame = ipc_stackframe::stack_pointer(ipc);
     std::cout << std::endl << std::endl << "simulation-toykit is RUNNING\n";
-    std::string service_name = "print_stack_info";
-    auto func = mgr.query_service(service_name);
-    if(func.has_value()){
-        std::any_cast<void(*)()>(func)();
-    }
-    else{
-        std::cout << "service not found " << service_name << std::endl;
-    }
+    query_service<uint32_t(*)(ipc_queue&, const vector_object_pack*)>(mgr, "push")(ipc, reinterpret_cast<const vector_object_pack*>(&p));
+    query_service<void(*)()>(mgr, "print_stack_info")();
     std::cout << "simulation-toykit CLOSED"<< std::endl << std::endl<< std::endl;
-    // 1. init ipc queue
-    // 2. load all plugin
-    // 3. run server
-    // 4. other send msg to server, do somethings
 }

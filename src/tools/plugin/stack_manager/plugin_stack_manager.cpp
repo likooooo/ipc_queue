@@ -1,7 +1,6 @@
-#include "ipc_queue.h"
-#include "ipc_stackframe.h"
-#include "ipc_stackframe_iterator.h"
 #include "plugin_manager/plugin_shared.hpp"
+#include "ipc_stackframe_iterator.h"
+#include "push.hpp"
 #include <iostream>
 #include <cxxabi.h>
 #include <vector>
@@ -13,9 +12,7 @@ public:
     bool onLoad(IPluginHost* host) override 
     {
         IPlugin::host_ = host;
-#if ENABLE_STACK_INFO
-        serviceId_.push_back(host->register_service(this, "print_stack_info", print_stack_info));
-#endif
+        serviceId_.push_back(host->register_service(this, "push", push));
         return true;
     }
     void onUnload() override 

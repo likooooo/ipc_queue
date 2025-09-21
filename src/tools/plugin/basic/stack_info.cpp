@@ -29,7 +29,7 @@ void print_stack_info()
         std::visit([](auto&& arg) {
             using T = std::decay_t<decltype(arg)>;
             if constexpr(std::is_same_v<any_object_smaller_than_16_byes, T>){
-                std::cout << "|-  type  : small stack object" << std::endl;
+                std::cout << "|-  type  : stack-buffer" << std::endl;
                 std::cout << "|-  value : ";
                 std::copy(arg.begin(), arg.end(), std::ostream_iterator<char>(std::cout, " "));
                 std::cout << std::endl;

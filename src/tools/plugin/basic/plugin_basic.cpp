@@ -2,9 +2,7 @@
 #include "plugin_manager/plugin_shared.hpp"
 #include <vector>
 
-#if ENABLE_STACK_INFO
-    void print_stack_info();
-#endif
+void print_stack_info();
 class plugin_basic : public IPlugin 
 {
 public:
@@ -12,9 +10,7 @@ public:
     bool onLoad(IPluginHost* host) override 
     {
         IPlugin::host_ = host;
-#if ENABLE_STACK_INFO
         serviceId_.push_back(host->register_service(this, "print_stack_info", print_stack_info));
-#endif
         return true;
     }
     void onUnload() override 

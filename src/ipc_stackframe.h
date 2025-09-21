@@ -47,14 +47,14 @@ struct ipc_stackframe
         static_assert(built_in_helper::is_built_in_type<T>());
         return std::get<T>(v);
     }
-    template<class T> T try_get()
-    {
-        return std::holds_alternative<T>(v) ? get<T>() : T();
-    }
-    template<class T> const T& get() const 
+    template<class T> const T& get()const
     {
         static_assert(built_in_helper::is_built_in_type<T>());
         return std::get<T>(v);
+    }
+    template<class T> T try_get()
+    {
+        return std::holds_alternative<T>(v) ? get<T>() : T();
     }
     template<class T> static T move_stack_next(T p, uint32_t n = 1){return p - n;}
     template<class T> static T move_stack_prev(T p, uint32_t n = 1){return p + n;}
